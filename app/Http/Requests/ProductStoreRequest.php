@@ -21,13 +21,13 @@ class ProductStoreRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    static public function rules()
     {
         return [
             'title' => ['required', 'max:255', 'string'],
-            'category' => ['required', 'in:destinasi,event'],
+            'category' => ['required', 'in:Destinasi,Event'],
             'address' => ['required', 'max:255', 'string'],
-            'description' => ['required', 'max:255', 'string'],
+            'description' => ['required', 'string'],
             'image' => ['nullable', 'image', 'max:1024'],
             'price' => ['nullable', 'numeric'],
         ];

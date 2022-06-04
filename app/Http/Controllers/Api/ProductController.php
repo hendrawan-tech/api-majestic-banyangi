@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -19,33 +20,86 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view-any', Product::class);
-
         $search = $request->get('search', '');
 
-        $products = Product::search($search)
+        $products = Product::with('comments')
+            ->search($search)
             ->latest()
             ->paginate();
 
-        return new ProductCollection($products);
+        if ($products) {
+            return ResponseFormatter::success($products);
+        } else {
+            return ResponseFormatter::error();
+        }
+    }
+
+    public function event(Request $request)
+    {
+        $search = $request->get('search', '');
+
+        $products = Product::with('comments', 'likes')
+            ->where('category', 'Event')
+            ->search($search)
+            ->latest()
+            ->paginate($request->item);
+
+        if ($products) {
+            return ResponseFormatter::success($products);
+        } else {
+            return ResponseFormatter::error();
+        }
+    }
+
+    public function destination(Request $request)
+    {
+        $results = [];
+
+        $search = $request->get('search', '');
+
+        $products = Product::where('category', 'Destinasi')
+            ->search($search)
+            ->latest()
+            ->paginate($request->item);
+
+        foreach ($products as $product) {
+            $data = $product;
+            foreach ($product->comments as $comment) {
+                $data['comments'] = $comment->user;
+            }
+            foreach ($product->likes as $like) {
+                $data['likes'] = $like->user;
+            }
+            array_push($results, $data);
+        }
+
+        if ($products) {
+            return ResponseFormatter::success($results);
+        } else {
+            return ResponseFormatter::error();
+        }
     }
 
     /**
      * @param \App\Http\Requests\ProductStoreRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductStoreRequest $request)
+    public function store(Request $request)
     {
-        $this->authorize('create', Product::class);
+        try {
+            $this->authorize('create', Product::class);
 
-        $validated = $request->validated();
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('public');
+            $validated = $request->validate(ProductStoreRequest::rules());
+            if ($request->hasFile('image')) {
+                $validated['image'] = $request->file('image')->store('public');
+            }
+
+            $product = Product::create($validated);
+
+            return ResponseFormatter::success($product);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
         }
-
-        $product = Product::create($validated);
-
-        return new ProductResource($product);
     }
 
     /**
@@ -55,9 +109,18 @@ class ProductController extends Controller
      */
     public function show(Request $request, Product $product)
     {
-        $this->authorize('view', $product);
+        // $this->authorize('view', $product);
+        // $data = [];
+        $data = $product;
 
-        return new ProductResource($product);
+        foreach ($product->comments as $comment) {
+            $data['comments'] = $comment->user;
+        }
+        foreach ($product->likes as $like) {
+            $data['likes'] = $like->user;
+        }
+
+        return new ProductResource($data);
     }
 
     /**
@@ -65,23 +128,26 @@ class ProductController extends Controller
      * @param \App\Models\Product $product
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductUpdateRequest $request, Product $product)
+    public function update(Request $request, Product $product)
     {
-        $this->authorize('update', $product);
+        try {
+            $this->authorize('update', $product);
+            $validated = $request->validate(ProductUpdateRequest::rules());
 
-        $validated = $request->validated();
+            if ($request->hasFile('image')) {
+                if ($product->image) {
+                    Storage::delete($product->image);
+                }
 
-        if ($request->hasFile('image')) {
-            if ($product->image) {
-                Storage::delete($product->image);
+                $validated['image'] = $request->file('image')->store('public');
             }
 
-            $validated['image'] = $request->file('image')->store('public');
+            $product->update($validated);
+
+            return ResponseFormatter::success($product);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
         }
-
-        $product->update($validated);
-
-        return new ProductResource($product);
     }
 
     /**
@@ -91,14 +157,18 @@ class ProductController extends Controller
      */
     public function destroy(Request $request, Product $product)
     {
-        $this->authorize('delete', $product);
+        try {
+            $this->authorize('delete', $product);
 
-        if ($product->image) {
-            Storage::delete($product->image);
+            if ($product->image) {
+                Storage::delete($product->image);
+            }
+
+            $product->delete();
+
+            return ResponseFormatter::success($product);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
         }
-
-        $product->delete();
-
-        return response()->noContent();
     }
 }

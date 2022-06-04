@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\ProductLikesController;
 use App\Http\Controllers\Api\PaymentOrdersController;
 use App\Http\Controllers\Api\ProductOrdersController;
 use App\Http\Controllers\Api\ProductCommentsController;
+use App\Http\Controllers\ProductController as ControllersProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,9 @@ use App\Http\Controllers\Api\ProductCommentsController;
 */
 
 Route::post('/login', [AuthController::class, 'login'])->name('api.login');
+Route::get('/events', [ProductController::class, 'event']);
+Route::get('/destinations', [ProductController::class, 'destination']);
+Route::get('/detail/{product}', [ProductController::class, 'show']);
 
 Route::middleware('auth:sanctum')
     ->get('/user', function (Request $request) {

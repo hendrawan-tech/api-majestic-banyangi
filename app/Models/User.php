@@ -56,4 +56,27 @@ class User extends Authenticatable
     {
         return $this->hasRole('super-admin');
     }
+
+    public function getProfilePhotoUrlAttribute()
+    {
+        $config = [
+            'default' => $this->defaultProfilePhotoUrl(),
+            'size' => '200' // use 200px by 200px image
+        ];
+
+        return 'https://www.gravatar.com/avatar/' . md5($this->email) . '?' . http_build_query($config);
+    }
+
+    /**
+     * @return string
+     */
+    public function defaultProfilePhotoUrl()
+    {
+        return 'https://ui-avatars.com/api/' . implode('/', [
+            urlencode($this->name),
+            200,
+            'EBF4FF',
+            '7F9CF5',
+        ]);
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
@@ -30,7 +31,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth-token');
 
         return response()->json([
-            'token' => $token->plainTextToken,
+            'data' => ['user' => $user, 'token' => $token->plainTextToken, 'profile' => $user->getProfilePhotoUrlAttribute()],
         ]);
     }
 }

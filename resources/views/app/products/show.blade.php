@@ -44,7 +44,7 @@
                             @lang('crud.products.inputs.image')
                         </h5>
                         <x-partials.thumbnail
-                            src="{{ $product->image ? \Storage::url($product->image) : '' }}"
+                            src="{{ $product->image ? asset($product->image) : '' }}"
                             size="150"
                         />
                     </div>

@@ -87,7 +87,7 @@
                                 </td>
                                 <td class="px-4 py-3 text-left">
                                     <x-partials.thumbnail
-                                        src="{{ $product->image ? \Storage::url($product->image) : '' }}"
+                                        src="{{ $product->image ? asset($product->image) : '' }}"
                                     />
                                 </td>
                                 <td class="px-4 py-3 text-right">

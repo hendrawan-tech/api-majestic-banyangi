@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -18,15 +19,18 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view-any', Order::class);
+        try {
+            $this->authorize('view-any', Order::class);
 
-        $search = $request->get('search', '');
+            $search = $request->get('search', '');
 
-        $orders = Order::search($search)
-            ->latest()
-            ->paginate();
-
-        return new OrderCollection($orders);
+            $orders = Order::with(['product', 'user', 'payment'])->search($search)
+                ->latest()
+                ->paginate();
+            return ResponseFormatter::success($orders);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error();
+        }
     }
 
     /**

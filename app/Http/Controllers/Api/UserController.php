@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
@@ -27,26 +28,32 @@ class UserController extends Controller
             ->latest()
             ->paginate();
 
-        return new UserCollection($users);
+        if ($users) {
+            return ResponseFormatter::success($users);
+        } else {
+            return ResponseFormatter::error();
+        }
     }
 
     /**
      * @param \App\Http\Requests\UserStoreRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserStoreRequest $request)
+    public function store(Request $request)
     {
-        $this->authorize('create', User::class);
+        try {
+            $this->authorize('create', User::class);
 
-        $validated = $request->validated();
+            $validated = $request->validate(UserStoreRequest::rules());
 
-        $validated['password'] = Hash::make($validated['password']);
+            $validated['password'] = Hash::make($validated['password']);
 
-        $user = User::create($validated);
+            $user = User::create($validated);
 
-        $user->syncRoles($request->roles);
-
-        return new UserResource($user);
+            return ResponseFormatter::success($user);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error();
+        }
     }
 
     /**

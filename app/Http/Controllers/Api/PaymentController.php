@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,7 +28,11 @@ class PaymentController extends Controller
             ->latest()
             ->paginate();
 
-        return new PaymentCollection($payments);
+        if ($payments) {
+            return ResponseFormatter::success($payments);
+        } else {
+            return ResponseFormatter::error();
+        }
     }
 
     /**
@@ -36,16 +41,19 @@ class PaymentController extends Controller
      */
     public function store(PaymentStoreRequest $request)
     {
-        $this->authorize('create', Payment::class);
+        try {
+            $this->authorize('create', Payment::class);
 
-        $validated = $request->validated();
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('public');
+            $validated = $request->validated();
+            if ($request->hasFile('image')) {
+                $validated['image'] = $request->file('image')->store('public');
+            }
+
+            $payment = Payment::create($validated);
+            return ResponseFormatter::success($payment);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
         }
-
-        $payment = Payment::create($validated);
-
-        return new PaymentResource($payment);
     }
 
     /**
@@ -67,21 +75,24 @@ class PaymentController extends Controller
      */
     public function update(PaymentUpdateRequest $request, Payment $payment)
     {
-        $this->authorize('update', $payment);
+        try {
+            $this->authorize('update', $payment);
 
-        $validated = $request->validated();
+            $validated = $request->validated();
 
-        if ($request->hasFile('image')) {
-            if ($payment->image) {
-                Storage::delete($payment->image);
+            if ($request->hasFile('image')) {
+                if ($payment->image) {
+                    Storage::delete($payment->image);
+                }
+
+                $validated['image'] = $request->file('image')->store('public');
             }
 
-            $validated['image'] = $request->file('image')->store('public');
+            $payment->update($validated);
+            return ResponseFormatter::success($payment);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
         }
-
-        $payment->update($validated);
-
-        return new PaymentResource($payment);
     }
 
     /**
@@ -91,14 +102,18 @@ class PaymentController extends Controller
      */
     public function destroy(Request $request, Payment $payment)
     {
-        $this->authorize('delete', $payment);
+        try {
+            $this->authorize('delete', $payment);
 
-        if ($payment->image) {
-            Storage::delete($payment->image);
+            if ($payment->image) {
+                Storage::delete($payment->image);
+            }
+
+            $payment->delete();
+
+            return ResponseFormatter::success($payment);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
         }
-
-        $payment->delete();
-
-        return response()->noContent();
     }
 }
