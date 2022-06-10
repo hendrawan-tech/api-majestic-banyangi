@@ -36,16 +36,29 @@ class ProductController extends Controller
 
     public function event(Request $request)
     {
+        $results = [];
+
         $search = $request->get('search', '');
 
-        $products = Product::with('comments', 'likes')
-            ->where('category', 'Event')
+        $products = Product::where('category', 'Event')
             ->search($search)
             ->latest()
             ->paginate($request->item);
 
+        foreach ($products as $product) {
+            $data = $product;
+            foreach ($product->comments as $comment) {
+                $data['comments'] = $comment->user;
+            }
+            foreach ($product->likes as $like) {
+                $data['likes'] = $like->user;
+                $data['favorite'] = $like->user->id == $request->id ? true : false;
+            }
+            array_push($results, $data);
+        }
+
         if ($products) {
-            return ResponseFormatter::success($products);
+            return ResponseFormatter::success($results);
         } else {
             return ResponseFormatter::error();
         }
@@ -69,6 +82,7 @@ class ProductController extends Controller
             }
             foreach ($product->likes as $like) {
                 $data['likes'] = $like->user;
+                $data['favorite'] = $like->user->id == $request->id ? true : false;
             }
             array_push($results, $data);
         }
@@ -118,6 +132,7 @@ class ProductController extends Controller
         }
         foreach ($product->likes as $like) {
             $data['likes'] = $like->user;
+            $data['favorite'] = $like->user->id == $request->id ? true : false;
         }
 
         return new ProductResource($data);

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderCollection;
+use App\Models\Order;
+use App\Models\Product;
 
 class PaymentOrdersController extends Controller
 {
@@ -35,25 +38,60 @@ class PaymentOrdersController extends Controller
      * @param \App\Models\Payment $payment
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Payment $payment)
+
+    public function order(Request $request)
     {
-        $this->authorize('create', Order::class);
+        try {
+            $results = [];
 
-        $validated = $request->validate([
-            'code' => ['required', 'max:255', 'string'],
-            'product_id' => ['required', 'exists:products,id'],
-            'user_id' => ['required', 'exists:users,id'],
-            'quantity' => ['required', 'max:255', 'string'],
-            'total' => ['required', 'numeric'],
-            'date' => ['required', 'date'],
-            'status' => [
-                'required',
-                'in:menunggu konfirmasi,pembayaran dikonfirmasi,menunggu pembayaran,dibatalkan,selesai',
-            ],
-        ]);
+            $orders = Order::where('user_id', $request->user_id)->with('user', 'payment', 'product')->latest()->get();
+            foreach ($orders as $order) {
+                $data = $order;
+                foreach ($order['product']->comments as $comment) {
+                    $data['comments'] = $comment->user;
+                }
+                foreach ($order['product']->likes as $like) {
+                    $data['likes'] = $like->user;
+                }
+                array_push($results, $data);
+            }
+            return ResponseFormatter::success($results);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
+        }
+    }
 
-        $order = $payment->orders()->create($validated);
+    public function store(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'product_id' => ['required', 'exists:products,id'],
+                'payment_id' => ['required', 'exists:payments,id'],
+                'user_id' => ['required', 'exists:users,id'],
+                'quantity' => ['required', 'max:255', 'string'],
+                'total' => ['required', 'string'],
+                'date' => ['required', 'string'],
+                'status' => ['required', 'string'],
+            ]);
 
-        return new OrderResource($order);
+            $validated['code'] = 'OR' . random_int(10000, 99999);
+
+            $order = Order::create($validated);
+
+            $data = Order::where('id', $order->id)->with('user', 'payment')->first();
+            $data['product'] = Product::where('id', $order->product_id)->first();
+            foreach ($data['product']->comments as $comment) {
+                $data['comments'] = $comment->user;
+            }
+            foreach ($data['product']->likes as $like) {
+                $data['likes'] = $like->user;
+                $data['favorite'] = $like->user->id == $request->id ? true : false;
+            }
+
+
+            return ResponseFormatter::success($data);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
+        }
     }
 }

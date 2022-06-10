@@ -35,6 +35,25 @@ Route::post('/login', [AuthController::class, 'login'])->name('api.login');
 Route::get('/events', [ProductController::class, 'event']);
 Route::get('/destinations', [ProductController::class, 'destination']);
 Route::get('/detail/{product}', [ProductController::class, 'show']);
+Route::get('/payment', [PaymentController::class, 'payment']);
+
+Route::post('/products/comments', [
+    ProductCommentsController::class,
+    'store',
+])->name('products.comments.store');
+
+Route::post('/users/likes', [
+    UserLikesController::class,
+    'store',
+])->name('users.likes.store');
+
+Route::post('/users/orders', [
+    PaymentOrdersController::class,
+    'store',
+])->name('users.orders.store');
+
+Route::get('/users/orders', [PaymentOrdersController::class, 'order']);
+
 
 Route::middleware('auth:sanctum')
     ->get('/user', function (Request $request) {

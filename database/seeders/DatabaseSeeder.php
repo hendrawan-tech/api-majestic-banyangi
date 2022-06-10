@@ -22,11 +22,11 @@ class DatabaseSeeder extends Seeder
             ]);
         $this->call(PermissionsSeeder::class);
 
-        $this->call(CommentSeeder::class);
-        $this->call(LikeSeeder::class);
-        $this->call(OrderSeeder::class);
-        $this->call(PaymentSeeder::class);
-        $this->call(ProductSeeder::class);
-        $this->call(UserSeeder::class);
+        // $this->call(CommentSeeder::class);
+        // $this->call(LikeSeeder::class);
+        // $this->call(OrderSeeder::class);
+        // $this->call(PaymentSeeder::class);
+        // $this->call(ProductSeeder::class);
+        // $this->call(UserSeeder::class);
     }
 }

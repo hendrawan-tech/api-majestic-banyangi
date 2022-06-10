@@ -35,6 +35,21 @@ class PaymentController extends Controller
         }
     }
 
+    public function payment(Request $request)
+    {
+        $search = $request->get('search', '');
+
+        $payments = Payment::search($search)
+            ->latest()
+            ->paginate($request->item);
+
+        if ($payments) {
+            return ResponseFormatter::success($payments);
+        } else {
+            return ResponseFormatter::error();
+        }
+    }
+
     /**
      * @param \App\Http\Requests\PaymentStoreRequest $request
      * @return \Illuminate\Http\Response

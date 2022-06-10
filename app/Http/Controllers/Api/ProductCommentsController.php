@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\CommentCollection;
+use App\Http\Resources\ProductResource;
+use App\Models\Comment;
 
 class ProductCommentsController extends Controller
 {
@@ -35,17 +38,31 @@ class ProductCommentsController extends Controller
      * @param \App\Models\Product $product
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Product $product)
+    public function store(Request $request)
     {
-        $this->authorize('create', Comment::class);
+        try {
+            $validated = $request->validate([
+                'comment' => ['required', 'max:255', 'string'],
+                'user_id' => ['required', 'exists:users,id'],
+                'destination_id' => ['required', 'exists:products,id'],
+            ]);
 
-        $validated = $request->validate([
-            'comment' => ['required', 'max:255', 'string'],
-            'user_id' => ['required', 'exists:users,id'],
-        ]);
+            $comment = Comment::create($validated);
 
-        $comment = $product->comments()->create($validated);
+            $product = Product::where('id', $request->destination_id)->first();
 
-        return new CommentResource($comment);
+            $data = $product;
+
+            foreach ($product->comments as $comment) {
+                $data['comments'] = $comment->user;
+            }
+            foreach ($product->likes as $like) {
+                $data['likes'] = $like->user;
+            }
+
+            return new ProductResource($data);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
+        }
     }
 }
