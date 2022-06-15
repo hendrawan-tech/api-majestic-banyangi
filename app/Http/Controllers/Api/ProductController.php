@@ -101,7 +101,6 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         try {
-            $this->authorize('create', Product::class);
 
             $validated = $request->validate(ProductStoreRequest::rules());
             if ($request->hasFile('image')) {
@@ -173,7 +172,7 @@ class ProductController extends Controller
     public function destroy(Request $request, Product $product)
     {
         try {
-            $this->authorize('delete', $product);
+            // $this->authorize('delete', $product);
 
             if ($product->image) {
                 Storage::delete($product->image);

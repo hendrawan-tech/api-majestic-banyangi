@@ -54,6 +54,8 @@ Route::post('/users/orders', [
 
 Route::get('/users/orders', [PaymentOrdersController::class, 'order']);
 
+Route::apiResource('products', ProductController::class);
+
 
 Route::middleware('auth:sanctum')
     ->get('/user', function (Request $request) {
@@ -117,7 +119,6 @@ Route::name('api.')
 
         Route::apiResource('orders', OrderController::class);
 
-        Route::apiResource('products', ProductController::class);
 
         // Product Comments
         Route::get('/products/{product}/comments', [
