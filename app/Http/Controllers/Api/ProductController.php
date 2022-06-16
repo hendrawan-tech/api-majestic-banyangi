@@ -104,7 +104,11 @@ class ProductController extends Controller
 
             $validated = $request->validate(ProductStoreRequest::rules());
             if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('public');
+                $file = $request->file('image');
+                $fileName = $file->getClientOriginalName();
+                $destinationPath = public_path() . '/images';
+                $file->move($destinationPath, $fileName);
+                $validated['image'] = $file->getClientOriginalName();
             }
 
             $product = Product::create($validated);
@@ -149,11 +153,11 @@ class ProductController extends Controller
             $validated = $request->validate(ProductUpdateRequest::rules());
 
             if ($request->hasFile('image')) {
-                if ($product->image) {
-                    Storage::delete($product->image);
-                }
-
-                $validated['image'] = $request->file('image')->store('public');
+                $file = $request->file('image');
+                $fileName = $file->getClientOriginalName();
+                $destinationPath = public_path() . '/images';
+                $file->move($destinationPath, $fileName);
+                $validated['image'] = $file->getClientOriginalName();
             }
 
             $product->update($validated);
@@ -172,11 +176,6 @@ class ProductController extends Controller
     public function destroy(Request $request, Product $product)
     {
         try {
-            // $this->authorize('delete', $product);
-
-            if ($product->image) {
-                Storage::delete($product->image);
-            }
 
             $product->delete();
 

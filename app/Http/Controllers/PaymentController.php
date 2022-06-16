@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\PaymentStoreRequest;
 use App\Http\Requests\PaymentUpdateRequest;
 
@@ -49,7 +48,11 @@ class PaymentController extends Controller
 
         $validated = $request->validated();
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('public');
+            $file = $request->file('image');
+            $fileName = $file->getClientOriginalName();
+            $destinationPath = public_path() . '/images';
+            $file->move($destinationPath, $fileName);
+            $validated['image'] = $file->getClientOriginalName();
         }
 
         $payment = Payment::create($validated);
@@ -94,11 +97,11 @@ class PaymentController extends Controller
 
         $validated = $request->validated();
         if ($request->hasFile('image')) {
-            if ($payment->image) {
-                Storage::delete($payment->image);
-            }
-
-            $validated['image'] = $request->file('image')->store('public');
+            $file = $request->file('image');
+            $fileName = $file->getClientOriginalName();
+            $destinationPath = public_path() . '/images';
+            $file->move($destinationPath, $fileName);
+            $validated['image'] = $file->getClientOriginalName();
         }
 
         $payment->update($validated);
@@ -116,10 +119,6 @@ class PaymentController extends Controller
     public function destroy(Request $request, Payment $payment)
     {
         $this->authorize('delete', $payment);
-
-        if ($payment->image) {
-            Storage::delete($payment->image);
-        }
 
         $payment->delete();
 
