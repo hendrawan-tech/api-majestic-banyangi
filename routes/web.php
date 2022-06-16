@@ -31,6 +31,10 @@ Route::get('/linkstorage', function () {
     Artisan::call('storage:link');
 });
 
+Route::get('/migrate', function () {
+    Artisan::call('migrate:fresh --seed');
+});
+
 Route::middleware(['auth:sanctum', 'verified'])
     ->get('/dashboard', function () {
         return view('dashboard');
