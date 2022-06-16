@@ -18,7 +18,6 @@ use App\Http\Controllers\Api\ProductLikesController;
 use App\Http\Controllers\Api\PaymentOrdersController;
 use App\Http\Controllers\Api\ProductOrdersController;
 use App\Http\Controllers\Api\ProductCommentsController;
-use App\Http\Controllers\ProductController as ControllersProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +35,9 @@ Route::get('/events', [ProductController::class, 'event']);
 Route::get('/destinations', [ProductController::class, 'destination']);
 Route::get('/detail/{product}', [ProductController::class, 'show']);
 Route::get('/payment', [PaymentController::class, 'payment']);
+Route::apiResource('orders', OrderController::class);
+Route::apiResource('products', ProductController::class);
+Route::apiResource('payments', PaymentController::class);
 
 Route::post('/products/comments', [
     ProductCommentsController::class,
@@ -54,7 +56,6 @@ Route::post('/users/orders', [
 
 Route::get('/users/orders', [PaymentOrdersController::class, 'order']);
 
-Route::apiResource('products', ProductController::class);
 
 
 Route::middleware('auth:sanctum')
@@ -73,7 +74,7 @@ Route::name('api.')
 
         Route::apiResource('likes', LikeController::class);
 
-        Route::apiResource('payments', PaymentController::class);
+        // Route::apiResource('payments', PaymentController::class);
 
         // Payment Orders
         Route::get('/payments/{payment}/orders', [
@@ -117,7 +118,7 @@ Route::name('api.')
             'store',
         ])->name('users.orders.store');
 
-        Route::apiResource('orders', OrderController::class);
+        // Route::apiResource('orders', OrderController::class);
 
 
         // Product Comments

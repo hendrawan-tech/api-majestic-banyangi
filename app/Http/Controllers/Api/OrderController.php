@@ -20,8 +20,6 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         try {
-            $this->authorize('view-any', Order::class);
-
             $search = $request->get('search', '');
 
             $orders = Order::with(['product', 'user', 'payment'])->search($search)
@@ -39,8 +37,6 @@ class OrderController extends Controller
      */
     public function store(OrderStoreRequest $request)
     {
-        $this->authorize('create', Order::class);
-
         $validated = $request->validated();
 
         $order = Order::create($validated);
@@ -55,8 +51,6 @@ class OrderController extends Controller
      */
     public function show(Request $request, Order $order)
     {
-        $this->authorize('view', $order);
-
         return new OrderResource($order);
     }
 
@@ -67,8 +61,6 @@ class OrderController extends Controller
      */
     public function update(OrderUpdateRequest $request, Order $order)
     {
-        $this->authorize('update', $order);
-
         $validated = $request->validated();
 
         $order->update($validated);
@@ -83,8 +75,6 @@ class OrderController extends Controller
      */
     public function destroy(Request $request, Order $order)
     {
-        $this->authorize('delete', $order);
-
         $order->delete();
 
         return response()->noContent();

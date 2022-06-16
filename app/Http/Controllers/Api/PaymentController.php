@@ -20,8 +20,6 @@ class PaymentController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view-any', Payment::class);
-
         $search = $request->get('search', '');
 
         $payments = Payment::search($search)
@@ -57,8 +55,6 @@ class PaymentController extends Controller
     public function store(PaymentStoreRequest $request)
     {
         try {
-            $this->authorize('create', Payment::class);
-
             $validated = $request->validated();
             if ($request->hasFile('image')) {
                 $validated['image'] = $request->file('image')->store('public');
@@ -78,8 +74,6 @@ class PaymentController extends Controller
      */
     public function show(Request $request, Payment $payment)
     {
-        $this->authorize('view', $payment);
-
         return new PaymentResource($payment);
     }
 
@@ -91,8 +85,6 @@ class PaymentController extends Controller
     public function update(PaymentUpdateRequest $request, Payment $payment)
     {
         try {
-            $this->authorize('update', $payment);
-
             $validated = $request->validated();
 
             if ($request->hasFile('image')) {
@@ -118,8 +110,6 @@ class PaymentController extends Controller
     public function destroy(Request $request, Payment $payment)
     {
         try {
-            $this->authorize('delete', $payment);
-
             if ($payment->image) {
                 Storage::delete($payment->image);
             }
