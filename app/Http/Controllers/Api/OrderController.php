@@ -51,7 +51,11 @@ class OrderController extends Controller
      */
     public function show(Request $request, Order $order)
     {
-        return new OrderResource($order);
+        try {
+            return ResponseFormatter::success($order);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error();
+        }
     }
 
     /**
