@@ -20,6 +20,7 @@ class Order extends Model
         'total',
         'date',
         'status',
+        'transfer',
     ];
 
     protected $searchableFields = ['*'];

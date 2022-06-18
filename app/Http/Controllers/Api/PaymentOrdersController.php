@@ -93,7 +93,7 @@ class PaymentOrdersController extends Controller
         }
     }
 
-    public function confirm(Request $request, $id)
+    public function confirm($id)
     {
         try {
             $results = [];
