@@ -43,7 +43,7 @@ class PaymentOrdersController extends Controller
     {
         try {
             $results = [];
-            $orders = Order::where('user_id', $request->user_id)->andWhereNotIn('status', ['Selesai'])->with('user', 'payment', 'product')->latest()->get();
+            $orders = Order::where('user_id', $request->user_id)->whereNotIn('status', ['Selesai'])->with('user', 'payment', 'product')->latest()->get();
             foreach ($orders as $order) {
                 $data = $order;
                 foreach ($order['product']->comments as $comment) {
