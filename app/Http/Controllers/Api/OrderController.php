@@ -55,6 +55,7 @@ class OrderController extends Controller
             $data = $order;
             $data['product'] = $order->product;
             $data['user'] = $order->user;
+            $data['payment'] = $order->payment;
             return ResponseFormatter::success($data);
         } catch (\Throwable $th) {
             return ResponseFormatter::error();
