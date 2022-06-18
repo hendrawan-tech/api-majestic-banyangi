@@ -167,6 +167,27 @@ class ProductController extends Controller
         }
     }
 
+    public function updateData(Request $request, Product $product)
+    {
+        try {
+            $validated = $request->validate(ProductUpdateRequest::rules());
+
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileName = $file->getClientOriginalName();
+                $destinationPath = public_path() . '/images';
+                $file->move($destinationPath, $fileName);
+                $validated['image'] = $file->getClientOriginalName();
+            }
+
+            $product->update($validated);
+
+            return ResponseFormatter::success($product);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
+        }
+    }
+
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\Product $product

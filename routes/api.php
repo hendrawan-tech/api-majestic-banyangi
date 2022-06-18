@@ -39,6 +39,8 @@ Route::apiResource('orders', OrderController::class);
 Route::apiResource('products', ProductController::class);
 Route::apiResource('payments', PaymentController::class);
 
+Route::post('products/{id}', [ProductController::class, 'updateData']);
+
 Route::post('/products/comments', [
     ProductCommentsController::class,
     'store',
