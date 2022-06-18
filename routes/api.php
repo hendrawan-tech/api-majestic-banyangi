@@ -56,6 +56,11 @@ Route::post('/users/orders', [
 
 Route::get('/users/orders', [PaymentOrdersController::class, 'order']);
 Route::get('/users/orders/done', [PaymentOrdersController::class, 'orderDone']);
+
+Route::post('/users/orders/payment', [PaymentOrdersController::class, 'payment']);
+Route::delete('/users/orders/cancel/{id}', [PaymentOrdersController::class, 'cancel']);
+Route::put('/users/orders/confirm/{id}', [PaymentOrdersController::class, 'confirm']);
+
 Route::apiResource('users', UserController::class);
 
 

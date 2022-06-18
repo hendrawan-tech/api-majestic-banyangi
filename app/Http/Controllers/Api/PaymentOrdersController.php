@@ -60,6 +60,74 @@ class PaymentOrdersController extends Controller
         }
     }
 
+    public function payment(Request $request)
+    {
+        try {
+            $results = [];
+            $orders = Order::where('id', $request->id)->with('user', 'payment', 'product')->first();
+            $fileName = "";
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileName = $file->getClientOriginalName();
+                $destinationPath = public_path() . '/images';
+                $file->move($destinationPath, $fileName);
+            }
+
+            $orders->update([
+                'transfer' => $fileName,
+                'date' => date('y-m-d'),
+                'status' => 'Menunggu Konfirmasi'
+            ]);
+
+            $data = $orders;
+            foreach ($orders['product']->comments as $comment) {
+                $data['comments'] = $comment->user;
+            }
+            foreach ($orders['product']->likes as $like) {
+                $data['likes'] = $like->user;
+            }
+            array_push($results, $data);
+            return ResponseFormatter::success($results);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
+        }
+    }
+
+    public function confirm(Request $request, $id)
+    {
+        try {
+            $results = [];
+            $orders = Order::where('id', $id)->with('user', 'payment', 'product')->first();
+
+            $orders->update([
+                'status' => 'Pembayaran Dikonfirmasi'
+            ]);
+
+            $data = $orders;
+            foreach ($orders['product']->comments as $comment) {
+                $data['comments'] = $comment->user;
+            }
+            foreach ($orders['product']->likes as $like) {
+                $data['likes'] = $like->user;
+            }
+            array_push($results, $data);
+            return ResponseFormatter::success($results);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
+        }
+    }
+
+    public function cancel($id)
+    {
+        try {
+            $orders = Order::where('id', $id)->with('user', 'payment', 'product')->first();
+            $orders->delete();
+            return ResponseFormatter::success($orders);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
+        }
+    }
+
     public function orderDone(Request $request)
     {
         try {
