@@ -87,7 +87,7 @@ Route::name('api.')
             'store',
         ])->name('payments.orders.store');
 
-        Route::apiResource('users', UserController::class);
+        // Route::apiResource('users', UserController::class);
 
         // User Comments
         Route::get('/users/{user}/comments', [
