@@ -20,8 +20,6 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('view-any', User::class);
-
         $search = $request->get('search', '');
 
         $users = User::search($search)
@@ -42,8 +40,6 @@ class UserController extends Controller
     public function store(Request $request)
     {
         try {
-            $this->authorize('create', User::class);
-
             $validated = $request->validate(UserStoreRequest::rules());
 
             $validated['password'] = Hash::make($validated['password']);
@@ -63,8 +59,6 @@ class UserController extends Controller
      */
     public function show(Request $request, User $user)
     {
-        $this->authorize('view', $user);
-
         return new UserResource($user);
     }
 
@@ -75,8 +69,6 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        $this->authorize('update', $user);
-
         $validated = $request->validated();
 
         if (empty($validated['password'])) {
@@ -99,8 +91,6 @@ class UserController extends Controller
      */
     public function destroy(Request $request, User $user)
     {
-        $this->authorize('delete', $user);
-
         $user->delete();
 
         return response()->noContent();
