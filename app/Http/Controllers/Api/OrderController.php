@@ -52,7 +52,10 @@ class OrderController extends Controller
     public function show(Request $request, Order $order)
     {
         try {
-            return ResponseFormatter::success($order);
+            $data = $order;
+            $data['product'] = $order->product;
+            $data['user'] = $order->user;
+            return ResponseFormatter::success($data);
         } catch (\Throwable $th) {
             return ResponseFormatter::error();
         }
