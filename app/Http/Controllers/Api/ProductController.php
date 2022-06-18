@@ -167,9 +167,10 @@ class ProductController extends Controller
         }
     }
 
-    public function updateData(Request $request, Product $product)
+    public function updateData(Request $request, $id)
     {
         try {
+            $product = Product::where('id', $id)->first();
             $validated = $request->validate(ProductUpdateRequest::rules());
 
             if ($request->hasFile('image')) {
