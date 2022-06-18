@@ -58,6 +58,7 @@ class ProductCommentsController extends Controller
             }
             foreach ($product->likes as $like) {
                 $data['likes'] = $like->user;
+                $data['favorite'] = $like->user->id == $request->user_id ? true : false;
             }
 
             return new ProductResource($data);
