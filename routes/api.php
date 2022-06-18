@@ -55,7 +55,7 @@ Route::post('/users/orders', [
 ])->name('users.orders.store');
 
 Route::get('/users/orders', [PaymentOrdersController::class, 'order']);
-Route::get('/users/orders/done', [PaymentOrdersController::class, 'orderDones']);
+Route::get('/users/orders/done', [PaymentOrdersController::class, 'orderDone']);
 Route::apiResource('users', UserController::class);
 
 
