@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\ResponseFormatter;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -9,6 +10,7 @@ use App\Http\Resources\CommentResource;
 use App\Http\Resources\CommentCollection;
 use App\Http\Requests\CommentStoreRequest;
 use App\Http\Requests\CommentUpdateRequest;
+use App\Http\Resources\ProductResource;
 
 class CommentController extends Controller
 {
@@ -79,10 +81,11 @@ class CommentController extends Controller
      */
     public function destroy(Request $request, Comment $comment)
     {
-        $this->authorize('delete', $comment);
-
-        $comment->delete();
-
-        return response()->noContent();
+        try {
+            $comment->delete();
+            return ResponseFormatter::success($comment);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
+        }
     }
 }

@@ -38,6 +38,7 @@ Route::get('/payment', [PaymentController::class, 'payment']);
 Route::apiResource('orders', OrderController::class);
 Route::apiResource('products', ProductController::class);
 Route::apiResource('payments', PaymentController::class);
+Route::apiResource('comments', CommentController::class);
 
 Route::post('/products/{id}', [ProductController::class, 'updateData']);
 
@@ -79,7 +80,6 @@ Route::name('api.')
         Route::apiResource('roles', RoleController::class);
         Route::apiResource('permissions', PermissionController::class);
 
-        Route::apiResource('comments', CommentController::class);
 
         Route::apiResource('likes', LikeController::class);
 
