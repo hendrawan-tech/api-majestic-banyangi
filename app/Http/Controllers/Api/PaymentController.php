@@ -57,7 +57,11 @@ class PaymentController extends Controller
         try {
             $validated = $request->validated();
             if ($request->hasFile('image')) {
-                $validated['image'] = $request->file('image')->store('public');
+                $file = $request->file('image');
+                $fileName = $file->getClientOriginalName();
+                $destinationPath = public_path() . '/images';
+                $file->move($destinationPath, $fileName);
+                $validated['image'] = $file->getClientOriginalName();
             }
 
             $payment = Payment::create($validated);
@@ -88,11 +92,11 @@ class PaymentController extends Controller
             $validated = $request->validated();
 
             if ($request->hasFile('image')) {
-                if ($payment->image) {
-                    Storage::delete($payment->image);
-                }
-
-                $validated['image'] = $request->file('image')->store('public');
+                $file = $request->file('image');
+                $fileName = $file->getClientOriginalName();
+                $destinationPath = public_path() . '/images';
+                $file->move($destinationPath, $fileName);
+                $validated['image'] = $file->getClientOriginalName();
             }
 
             $payment->update($validated);
@@ -110,10 +114,6 @@ class PaymentController extends Controller
     public function destroy(Request $request, Payment $payment)
     {
         try {
-            if ($payment->image) {
-                Storage::delete($payment->image);
-            }
-
             $payment->delete();
 
             return ResponseFormatter::success($payment);
