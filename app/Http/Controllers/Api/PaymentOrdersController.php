@@ -43,8 +43,28 @@ class PaymentOrdersController extends Controller
     {
         try {
             $results = [];
+            $orders = Order::where('user_id', $request->user_id)->whereNotIn('status', 'Selesai')->with('user', 'payment', 'product')->latest()->get();
+            foreach ($orders as $order) {
+                $data = $order;
+                foreach ($order['product']->comments as $comment) {
+                    $data['comments'] = $comment->user;
+                }
+                foreach ($order['product']->likes as $like) {
+                    $data['likes'] = $like->user;
+                }
+                array_push($results, $data);
+            }
+            return ResponseFormatter::success($results);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
+        }
+    }
 
-            $orders = Order::where('user_id', $request->user_id)->with('user', 'payment', 'product')->latest()->get();
+    public function orderDone(Request $request)
+    {
+        try {
+            $results = [];
+            $orders = Order::where(['user_id' => $request->user_id, 'status' => 'Selesai'])->with('user', 'payment', 'product')->latest()->get();
             foreach ($orders as $order) {
                 $data = $order;
                 foreach ($order['product']->comments as $comment) {
