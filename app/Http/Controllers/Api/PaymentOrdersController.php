@@ -69,8 +69,8 @@ class PaymentOrdersController extends Controller
                 'date' => date('y-m-d'),
                 'status' => 'Menunggu Konfirmasi'
             ];
-            if ($request->hasFile('image')) {
-                $file = $request->file('image');
+            if ($request->hasFile('transfer')) {
+                $file = $request->file('transfer');
                 $fileName = $file->getClientOriginalName();
                 $destinationPath = public_path() . '/images';
                 $file->move($destinationPath, $fileName);
