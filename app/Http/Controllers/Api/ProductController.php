@@ -149,7 +149,6 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         try {
-            $this->authorize('update', $product);
             $validated = $request->validate(ProductUpdateRequest::rules());
 
             if ($request->hasFile('image')) {
