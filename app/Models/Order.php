@@ -11,17 +11,19 @@ class Order extends Model
     use HasFactory;
     use Searchable;
 
-    protected $fillable = [
-        'code',
-        'product_id',
-        'user_id',
-        'payment_id',
-        'quantity',
-        'total',
-        'date',
-        'status',
-        'transfer',
-    ];
+    // protected $fillable = [
+    //     'code',
+    //     'product_id',
+    //     'user_id',
+    //     'payment_id',
+    //     'quantity',
+    //     'total',
+    //     'date',
+    //     'status',
+    //     'transfer',
+    // ];
+
+    protected $guarded = ['id'];
 
     protected $searchableFields = ['*'];
 

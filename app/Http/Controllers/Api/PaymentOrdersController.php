@@ -65,19 +65,19 @@ class PaymentOrdersController extends Controller
         try {
             $results = [];
             $orders = Order::where('id', $request->id)->with('user', 'payment', 'product')->first();
-            $fileName = "";
+            $data = [
+                'date' => date('y-m-d'),
+                'status' => 'Menunggu Konfirmasi'
+            ];
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
                 $fileName = $file->getClientOriginalName();
                 $destinationPath = public_path() . '/images';
                 $file->move($destinationPath, $fileName);
+                $data['transfer'] = $fileName;
             }
 
-            $orders->update([
-                'transfer' => $fileName,
-                'date' => date('y-m-d'),
-                'status' => 'Menunggu Konfirmasi'
-            ]);
+            $orders->update($data);
 
             $data = $orders;
             foreach ($orders['product']->comments as $comment) {
