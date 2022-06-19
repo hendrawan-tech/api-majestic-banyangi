@@ -39,6 +39,12 @@ class ProductCommentsController extends Controller
      */
     public function store(Request $request)
     {
+        return $validated = $request->validate([
+            'comment' => ['required', 'max:255', 'string'],
+            'user_id' => ['required'],
+            'destination_id' => ['required'],
+        ]);
+        
         try {
             return $validated = $request->validate([
                 'comment' => ['required', 'max:255', 'string'],
