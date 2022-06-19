@@ -135,14 +135,14 @@ Route::name('api.')
 
 
         // Product Comments
-        Route::get('/products/{product}/comments', [
-            ProductCommentsController::class,
-            'index',
-        ])->name('products.comments.index');
-        Route::post('/products/{product}/comments', [
-            ProductCommentsController::class,
-            'store',
-        ])->name('products.comments.store');
+        // Route::get('/products/{product}/comments', [
+        //     ProductCommentsController::class,
+        //     'index',
+        // ])->name('products.comments.index');
+        // Route::post('/products/{product}/comments', [
+        //     ProductCommentsController::class,
+        //     'store',
+        // ])->name('products.comments.store');
 
         // Product Likes
         Route::get('/products/{product}/likes', [
