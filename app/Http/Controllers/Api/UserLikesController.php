@@ -92,7 +92,7 @@ class UserLikesController extends Controller
         ]);
 
         try {
-            return $validated = $request->validate([
+            $validated = $request->validate([
                 'comment' => ['required', 'max:255', 'string'],
                 'user_id' => ['required'],
                 'destination_id' => ['required'],
