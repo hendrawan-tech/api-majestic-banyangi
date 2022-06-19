@@ -62,6 +62,19 @@ class OrderController extends Controller
         }
     }
 
+    public function getOrder($order)
+    {
+        try {
+            $data = Order::where('code', $order)->first();
+            $data['product'] = $order->product;
+            $data['user'] = $order->user;
+            $data['payment'] = $order->payment;
+            return ResponseFormatter::success($data);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error();
+        }
+    }
+
     /**
      * @param \App\Http\Requests\OrderUpdateRequest $request
      * @param \App\Models\Order $order

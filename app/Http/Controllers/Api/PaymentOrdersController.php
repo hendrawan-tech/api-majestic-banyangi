@@ -117,6 +117,30 @@ class PaymentOrdersController extends Controller
         }
     }
 
+    public function done($id)
+    {
+        try {
+            $results = [];
+            $orders = Order::where('id', $id)->with('user', 'payment', 'product')->first();
+
+            $orders->update([
+                'status' => 'Selesai'
+            ]);
+
+            $data = $orders;
+            foreach ($orders['product']->comments as $comment) {
+                $data['comments'] = $comment->user;
+            }
+            foreach ($orders['product']->likes as $like) {
+                $data['likes'] = $like->user;
+            }
+            array_push($results, $data);
+            return ResponseFormatter::success($results);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
+        }
+    }
+
     public function cancel($id)
     {
         try {
