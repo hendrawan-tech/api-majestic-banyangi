@@ -128,6 +128,30 @@ class PaymentOrdersController extends Controller
         }
     }
 
+    public function batal($id)
+    {
+        try {
+            $results = [];
+            $orders = Order::where('id', $id)->with('user', 'payment', 'product')->first();
+
+            $orders->update([
+                'status' => 'Dibatalkan'
+            ]);
+
+            $data = $orders;
+            foreach ($orders['product']->comments as $comment) {
+                $data['comments'] = $comment->user;
+            }
+            foreach ($orders['product']->likes as $like) {
+                $data['likes'] = $like->user;
+            }
+            array_push($results, $data);
+            return ResponseFormatter::success($results);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
+        }
+    }
+
     public function orderDone(Request $request)
     {
         try {
