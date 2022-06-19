@@ -42,8 +42,8 @@ class ProductCommentsController extends Controller
         try {
             $validated = $request->validate([
                 'comment' => ['required', 'max:255', 'string'],
-                'user_id' => ['required', 'exists:users,id'],
-                'destination_id' => ['required', 'exists:products,id'],
+                'user_id' => ['required'],
+                'destination_id' => ['required'],
             ]);
 
             $comment = Comment::create($validated);
