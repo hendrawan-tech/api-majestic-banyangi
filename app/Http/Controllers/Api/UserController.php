@@ -100,6 +100,35 @@ class UserController extends Controller
         }
     }
 
+    public function updateUser(Request $request, $id)
+    {
+        try {
+            $user = User::where('id', $id)->first();
+
+            $validated = $request->validate(UserStoreRequest::perbarui());
+
+            if ($request->hasFile('profile_photo_path')) {
+                $file = $request->file('profile_photo_path');
+                $fileName = $file->getClientOriginalName();
+                $destinationPath = public_path() . '/images';
+                $file->move($destinationPath, $fileName);
+                $validated['profile_photo_path'] = $file->getClientOriginalName();
+            }
+
+            $validated['password'] = Hash::make($validated['password']);
+
+            $user->update($validated);
+
+            $token = $user->createToken('auth-token');
+
+            return response()->json([
+                'data' => ['user' => $user, 'token' => $token->plainTextToken, 'profile' => $user->getProfilePhotoUrlAttribute()],
+            ]);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error();
+        }
+    }
+
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\User $user

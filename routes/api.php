@@ -73,6 +73,7 @@ Route::put('/users/orders/confirm/{id}', [PaymentOrdersController::class, 'confi
 Route::put('/users/orders/cancel/{id}', [PaymentOrdersController::class, 'batal']);
 
 Route::apiResource('users', UserController::class);
+Route::post('users/update/{id}', [UserController::class, 'updateUser']);
 
 
 
