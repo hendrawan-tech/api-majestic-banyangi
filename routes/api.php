@@ -42,7 +42,7 @@ Route::apiResource('comments', CommentController::class);
 
 Route::post('/products/{id}', [ProductController::class, 'updateData']);
 
-Route::get('/getOrder/{code}', [OrderController::class, 'getOrder']);
+Route::get('/get-order/{code}', [OrderController::class, 'getOrder']);
 
 // Route::post('/products/comments', [ProductCommentsController::class, 'add']);
 // Route::post('/products/comments', [ProductCommentsController::class, 'add']);
@@ -62,6 +62,7 @@ Route::post('/users/orders', [
     'store',
 ])->name('users.orders.store');
 
+Route::get('/get-order', [PaymentOrdersController::class, 'getOrder']);
 Route::get('/users/orders', [PaymentOrdersController::class, 'order']);
 Route::get('/users/orders/done', [PaymentOrdersController::class, 'orderDone']);
 Route::post('/users/orders/done/{id}', [PaymentOrdersController::class, 'done']);

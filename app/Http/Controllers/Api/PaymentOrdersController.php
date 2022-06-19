@@ -33,6 +33,21 @@ class PaymentOrdersController extends Controller
         return new OrderCollection($orders);
     }
 
+    public function getOrder(Request $request)
+    {
+        // return $code;
+        try {
+            $data = Order::where('id', $request->code)->first();
+            $data['product'] = $data->product;
+            $data['user'] = $data->user;
+            $data['payment'] = $data->payment;
+            return ResponseFormatter::success($data);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error();
+        }
+    }
+
+
     /**
      * @param \Illuminate\Http\Request $request
      * @param \App\Models\Payment $payment
