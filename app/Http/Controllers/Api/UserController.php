@@ -115,8 +115,6 @@ class UserController extends Controller
                 $validated['profile_photo_path'] = $file->getClientOriginalName();
             }
 
-            $validated['password'] = Hash::make($validated['password']);
-
             $user->update($validated);
 
             $token = $user->createToken('auth-token');
