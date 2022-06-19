@@ -37,7 +37,7 @@ class PaymentOrdersController extends Controller
     {
         // return $code;
         try {
-            $data = Order::where('id', $request->code)->first();
+            $data = Order::where('code', $request->code)->first();
             $data['product'] = $data->product;
             $data['user'] = $data->user;
             $data['payment'] = $data->payment;
