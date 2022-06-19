@@ -46,7 +46,7 @@ Route::get('/getOrder/{code}', [OrderController::class, 'getOrder']);
 
 Route::post('/products/comments', [
     ProductCommentsController::class,
-    'store',
+    'add',
 ]);
 
 Route::post('/users/likes', [

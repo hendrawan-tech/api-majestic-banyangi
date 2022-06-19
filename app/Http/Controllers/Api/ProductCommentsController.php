@@ -37,7 +37,7 @@ class ProductCommentsController extends Controller
      * @param \App\Models\Product $product
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function add(Request $request)
     {
         return $request->all();
         return $validated = $request->validate([
