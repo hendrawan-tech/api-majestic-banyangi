@@ -82,89 +82,89 @@ Route::middleware('auth:sanctum')
     })
     ->name('api.user');
 
-Route::name('api.')
-    ->middleware('auth:sanctum')
-    ->group(function () {
-        Route::apiResource('roles', RoleController::class);
-        Route::apiResource('permissions', PermissionController::class);
+// Route::name('api.')
+//     ->middleware('auth:sanctum')
+//     ->group(function () {
+//         Route::apiResource('roles', RoleController::class);
+//         Route::apiResource('permissions', PermissionController::class);
 
 
-        Route::apiResource('likes', LikeController::class);
+//         Route::apiResource('likes', LikeController::class);
 
-        // Route::apiResource('payments', PaymentController::class);
+//         // Route::apiResource('payments', PaymentController::class);
 
-        // Payment Orders
-        Route::get('/payments/{payment}/orders', [
-            PaymentOrdersController::class,
-            'index',
-        ])->name('payments.orders.index');
-        Route::post('/payments/{payment}/orders', [
-            PaymentOrdersController::class,
-            'store',
-        ])->name('payments.orders.store');
+//         // Payment Orders
+//         Route::get('/payments/{payment}/orders', [
+//             PaymentOrdersController::class,
+//             'index',
+//         ])->name('payments.orders.index');
+//         Route::post('/payments/{payment}/orders', [
+//             PaymentOrdersController::class,
+//             'store',
+//         ])->name('payments.orders.store');
 
-        // Route::apiResource('users', UserController::class);
+//         // Route::apiResource('users', UserController::class);
 
-        // User Comments
-        Route::get('/users/{user}/comments', [
-            UserCommentsController::class,
-            'index',
-        ])->name('users.comments.index');
-        Route::post('/users/{user}/comments', [
-            UserCommentsController::class,
-            'store',
-        ])->name('users.comments.store');
+//         // User Comments
+//         Route::get('/users/{user}/comments', [
+//             UserCommentsController::class,
+//             'index',
+//         ])->name('users.comments.index');
+//         Route::post('/users/{user}/comments', [
+//             UserCommentsController::class,
+//             'store',
+//         ])->name('users.comments.store');
 
-        // User Likes
-        Route::get('/users/{user}/likes', [
-            UserLikesController::class,
-            'index',
-        ])->name('users.likes.index');
-        Route::post('/users/{user}/likes', [
-            UserLikesController::class,
-            'store',
-        ])->name('users.likes.store');
+//         // User Likes
+//         Route::get('/users/{user}/likes', [
+//             UserLikesController::class,
+//             'index',
+//         ])->name('users.likes.index');
+//         Route::post('/users/{user}/likes', [
+//             UserLikesController::class,
+//             'store',
+//         ])->name('users.likes.store');
 
-        // User Orders
-        Route::get('/users/{user}/orders', [
-            UserOrdersController::class,
-            'index',
-        ])->name('users.orders.index');
-        Route::post('/users/{user}/orders', [
-            UserOrdersController::class,
-            'store',
-        ])->name('users.orders.store');
+//         // User Orders
+//         Route::get('/users/{user}/orders', [
+//             UserOrdersController::class,
+//             'index',
+//         ])->name('users.orders.index');
+//         Route::post('/users/{user}/orders', [
+//             UserOrdersController::class,
+//             'store',
+//         ])->name('users.orders.store');
 
-        // Route::apiResource('orders', OrderController::class);
+//         // Route::apiResource('orders', OrderController::class);
 
 
-        // Product Comments
-        // Route::get('/products/{product}/comments', [
-        //     ProductCommentsController::class,
-        //     'index',
-        // ])->name('products.comments.index');
-        // Route::post('/products/{product}/comments', [
-        //     ProductCommentsController::class,
-        //     'store',
-        // ])->name('products.comments.store');
+//         // Product Comments
+//         // Route::get('/products/{product}/comments', [
+//         //     ProductCommentsController::class,
+//         //     'index',
+//         // ])->name('products.comments.index');
+//         // Route::post('/products/{product}/comments', [
+//         //     ProductCommentsController::class,
+//         //     'store',
+//         // ])->name('products.comments.store');
 
-        // Product Likes
-        Route::get('/products/{product}/likes', [
-            ProductLikesController::class,
-            'index',
-        ])->name('products.likes.index');
-        Route::post('/products/{product}/likes', [
-            ProductLikesController::class,
-            'store',
-        ])->name('products.likes.store');
+//         // Product Likes
+//         Route::get('/products/{product}/likes', [
+//             ProductLikesController::class,
+//             'index',
+//         ])->name('products.likes.index');
+//         Route::post('/products/{product}/likes', [
+//             ProductLikesController::class,
+//             'store',
+//         ])->name('products.likes.store');
 
-        // Product Orders
-        Route::get('/products/{product}/orders', [
-            ProductOrdersController::class,
-            'index',
-        ])->name('products.orders.index');
-        Route::post('/products/{product}/orders', [
-            ProductOrdersController::class,
-            'store',
-        ])->name('products.orders.store');
-    });
+//         // Product Orders
+//         Route::get('/products/{product}/orders', [
+//             ProductOrdersController::class,
+//             'index',
+//         ])->name('products.orders.index');
+//         Route::post('/products/{product}/orders', [
+//             ProductOrdersController::class,
+//             'store',
+//         ])->name('products.orders.store');
+//     });
