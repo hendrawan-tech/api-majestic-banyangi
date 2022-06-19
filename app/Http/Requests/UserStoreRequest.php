@@ -30,4 +30,15 @@ class UserStoreRequest extends FormRequest
             'password' => ['required'],
         ];
     }
+
+    static public function perbarui()
+    {
+        return [
+            'name' => ['required', 'max:255', 'string'],
+            'email' => ['required', 'unique:users,email', 'email'],
+            'phone_number' => ['required'],
+            'profile_photo_path' => ['nullable', 'image', 'max:1024'],
+            'password' => ['nullable'],
+        ];
+    }
 }

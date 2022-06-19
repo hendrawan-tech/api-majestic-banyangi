@@ -75,19 +75,29 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user)
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validate(UserStoreRequest::perbarui());
 
-        if (empty($validated['password'])) {
-            unset($validated['password']);
-        } else {
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileName = $file->getClientOriginalName();
+                $destinationPath = public_path() . '/images';
+                $file->move($destinationPath, $fileName);
+                $validated['image'] = $file->getClientOriginalName();
+            }
+
             $validated['password'] = Hash::make($validated['password']);
+
+            $user->update($validated);
+
+            $token = $user->createToken('auth-token');
+
+            return response()->json([
+                'data' => ['user' => $user, 'token' => $token->plainTextToken, 'profile' => $user->getProfilePhotoUrlAttribute()],
+            ]);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error();
         }
-
-        $user->update($validated);
-
-        $user->syncRoles($request->roles);
-
-        return new UserResource($user);
     }
 
     /**
