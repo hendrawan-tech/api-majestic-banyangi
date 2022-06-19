@@ -9,6 +9,7 @@ use App\Http\Resources\LikeResource;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\LikeCollection;
 use App\Http\Resources\ProductResource;
+use App\Models\Comment;
 use App\Models\Like;
 use App\Models\Product;
 
@@ -79,6 +80,41 @@ class UserLikesController extends Controller
             }
 
             return new ProductResource($data);
+        }
+    }
+
+    public function add(Request $request)
+    {
+        $validated = $request->validate([
+            'comment' => ['required', 'max:255', 'string'],
+            'user_id' => ['required'],
+            'destination_id' => ['required'],
+        ]);
+
+        try {
+            return $validated = $request->validate([
+                'comment' => ['required', 'max:255', 'string'],
+                'user_id' => ['required'],
+                'destination_id' => ['required'],
+            ]);
+
+            $comment = Comment::create($validated);
+
+            $product = Product::where('id', $request->destination_id)->first();
+
+            $data = $product;
+
+            foreach ($product->comments as $comment) {
+                $data['comments'] = $comment->user;
+            }
+            foreach ($product->likes as $like) {
+                $data['likes'] = $like->user;
+                $data['favorite'] = $like->user->id == $request->user_id ? true : false;
+            }
+
+            return new ProductResource($data);
+        } catch (\Throwable $th) {
+            return ResponseFormatter::error($th);
         }
     }
 }

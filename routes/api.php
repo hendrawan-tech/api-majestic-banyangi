@@ -44,15 +44,18 @@ Route::post('/products/{id}', [ProductController::class, 'updateData']);
 
 Route::get('/getOrder/{code}', [OrderController::class, 'getOrder']);
 
-Route::post('/products/comments', [
-    ProductCommentsController::class,
-    'add',
-]);
+// Route::post('/products/comments', [ProductCommentsController::class, 'add']);
+// Route::post('/products/comments', [ProductCommentsController::class, 'add']);
 
 Route::post('/users/likes', [
     UserLikesController::class,
     'store',
 ])->name('users.likes.store');
+
+Route::post('/users/comment', [
+    UserLikesController::class,
+    'add'
+]);
 
 Route::post('/users/orders', [
     PaymentOrdersController::class,

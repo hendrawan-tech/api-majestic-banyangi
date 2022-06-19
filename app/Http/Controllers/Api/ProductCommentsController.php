@@ -37,39 +37,40 @@ class ProductCommentsController extends Controller
      * @param \App\Models\Product $product
      * @return \Illuminate\Http\Response
      */
-    public function add(Request $request)
-    {
-        return $request->all();
-        return $validated = $request->validate([
-            'comment' => ['required', 'max:255', 'string'],
-            'user_id' => ['required'],
-            'destination_id' => ['required'],
-        ]);
+    // public function add(Request $request)
+    // {
+    //     return 'okok';
+    //     return $request->all();
+    //     return $validated = $request->validate([
+    //         'comment' => ['required', 'max:255', 'string'],
+    //         'user_id' => ['required'],
+    //         'destination_id' => ['required'],
+    //     ]);
 
-        try {
-            return $validated = $request->validate([
-                'comment' => ['required', 'max:255', 'string'],
-                'user_id' => ['required'],
-                'destination_id' => ['required'],
-            ]);
+    //     try {
+    //         return $validated = $request->validate([
+    //             'comment' => ['required', 'max:255', 'string'],
+    //             'user_id' => ['required'],
+    //             'destination_id' => ['required'],
+    //         ]);
 
-            $comment = Comment::create($validated);
+    //         $comment = Comment::create($validated);
 
-            $product = Product::where('id', $request->destination_id)->first();
+    //         $product = Product::where('id', $request->destination_id)->first();
 
-            $data = $product;
+    //         $data = $product;
 
-            foreach ($product->comments as $comment) {
-                $data['comments'] = $comment->user;
-            }
-            foreach ($product->likes as $like) {
-                $data['likes'] = $like->user;
-                $data['favorite'] = $like->user->id == $request->user_id ? true : false;
-            }
+    //         foreach ($product->comments as $comment) {
+    //             $data['comments'] = $comment->user;
+    //         }
+    //         foreach ($product->likes as $like) {
+    //             $data['likes'] = $like->user;
+    //             $data['favorite'] = $like->user->id == $request->user_id ? true : false;
+    //         }
 
-            return new ProductResource($data);
-        } catch (\Throwable $th) {
-            return ResponseFormatter::error($th);
-        }
-    }
+    //         return new ProductResource($data);
+    //     } catch (\Throwable $th) {
+    //         return ResponseFormatter::error($th);
+    //     }
+    // }
 }
