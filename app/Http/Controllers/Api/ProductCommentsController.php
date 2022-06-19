@@ -20,7 +20,6 @@ class ProductCommentsController extends Controller
      */
     public function index(Request $request, Product $product)
     {
-        $this->authorize('view', $product);
 
         $search = $request->get('search', '');
 
