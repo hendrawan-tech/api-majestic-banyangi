@@ -46,7 +46,11 @@ class UserController extends Controller
 
             $user = User::create($validated);
 
-            return ResponseFormatter::success($user);
+            $token = $user->createToken('auth-token');
+
+            return response()->json([
+                'data' => ['user' => $user, 'token' => $token->plainTextToken, 'profile' => $user->getProfilePhotoUrlAttribute()],
+            ]);
         } catch (\Throwable $th) {
             return ResponseFormatter::error();
         }
