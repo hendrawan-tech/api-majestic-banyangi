@@ -22,7 +22,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use TwoFactorAuthenticatable;
 
-    protected $fillable = ['name', 'email', 'password', 'phone_number'];
+    protected $fillable = ['name', 'email', 'password', 'phone_number', 'profile_photo_path'];
 
     protected $searchableFields = ['*'];
 
