@@ -42,7 +42,7 @@ Route::apiResource('comments', CommentController::class);
 
 Route::post('/products/{id}', [ProductController::class, 'updateData']);
 
-Route::get('/get-order/{code}', [OrderController::class, 'getOrder']);
+// Route::get('/get-order/{code}', [OrderController::class, 'getOrder']);
 
 // Route::post('/products/comments', [ProductCommentsController::class, 'add']);
 // Route::post('/products/comments', [ProductCommentsController::class, 'add']);
