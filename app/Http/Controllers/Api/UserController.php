@@ -46,6 +46,8 @@ class UserController extends Controller
 
             $user = User::create($validated);
 
+            $user = User::where('id', $user->id)->first();
+
             $token = $user->createToken('auth-token');
 
             return response()->json([
